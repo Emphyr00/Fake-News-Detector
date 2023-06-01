@@ -1,0 +1,4 @@
+CREATE DATABASE fake_news_detector_user_data;
+CREATE DATABASE fake_news_detector_training_data;
+GRANT ALL PRIVILEGES ON DATABASE fake_news_detector_user_data TO postgres;
+GRANT ALL PRIVILEGES ON DATABASE fake_news_detector_training_data TO postgres;
