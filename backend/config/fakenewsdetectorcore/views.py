@@ -1,6 +1,18 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from rest_framework import viewsets
+from .models import UserHistoryEntry, UserHistory, User
+from .serializers import UserHistoryEntrySerializer, UserHistorySerializer, UserSerializer
 
-# Create your views here.
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+
+class UserHistoryEntryViewSet(viewsets.ModelViewSet):
+    queryset = UserHistoryEntry.objects.all()
+    serializer_class = UserHistoryEntrySerializer
+
+
+class UserHistoryViewSet(viewsets.ModelViewSet):
+    queryset = UserHistory.objects.all()
+    serializer_class = UserHistorySerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
