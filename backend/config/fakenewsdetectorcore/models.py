@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class User(models.Model):
     username = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
@@ -7,7 +8,7 @@ class User(models.Model):
     objects = models.Manager()
 
     def __str__(self):
-        return self.username
+        return self
 
 
 class UserHistory(models.Model):
@@ -20,6 +21,7 @@ class UserHistory(models.Model):
 class UserHistoryEntry(models.Model):
     text = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_fake_news = models.BooleanField(default=False)
     user_history = models.ForeignKey(
         UserHistory,
         on_delete=models.CASCADE,
@@ -29,4 +31,13 @@ class UserHistoryEntry(models.Model):
     objects = models.Manager()
 
     def __str__(self):
-        return self.text
+        return self
+
+
+class Prediction(models.Model):
+    objects = models.Manager()
+    text = models.TextField()
+    user_id = models.IntegerField()
+
+    def __str__(self):
+        return f"Prediction {self.pk}"
