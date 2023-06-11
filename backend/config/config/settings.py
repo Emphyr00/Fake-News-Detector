@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-mgo)#3ak7n(@pmig)q%gtee(imf1sg8n7!ems@r0j4bh#^s)7j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['0.0.0.0','localhost']
 
 # Application definition
 
@@ -37,7 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'fakenewsdetectorcore',
+    'rest_framework.authtoken',
     'rest_framework',
+    'user_api',
+    'userhistory',
+    'knox',
 ]
 
 MIDDLEWARE = [
@@ -113,6 +117,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        'knox.auth.TokenAuthentication',
+    ]
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

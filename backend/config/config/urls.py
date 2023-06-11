@@ -19,4 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", include("fakenewsdetectorcore.urls")),]
+    path('fakenews/', include("fakenewsdetectorcore.urls")),
+    path('user/', include("user_api.urls")),
+    path('history/', include('userhistory.urls'))
+    ]
