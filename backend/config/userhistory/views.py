@@ -16,3 +16,18 @@ class TextCreateAPIView(APIView):
 
     def perform_create(self, text_Link, user_id, isFakeNews):
         Text.objects.create(user=user_id, content=text_Link, isFakeNews=isFakeNews)
+
+
+class TextCreateAPIView(APIView):
+    def post(self, request):
+        text = request.data.get('text')
+        isFakeNews = request.data.get('isFakeNews')
+        text_id = request.data.get('text_id')
+
+        Text.objects.create( content=text, isFakeNews=isFakeNews)
+
+        return Response({
+            "text": text,
+            "isFakeNews": isFakeNews,
+            "text_id": text_id
+        })
