@@ -10,15 +10,37 @@ services:
       - 5432:5432
     networks:
       - backend_network
-  backend:
-    build: ./backend
-    env_file: ./backend/.env
+  predict:
+    build: ./predict
+    env_file: ./predict/.env
     volumes: 
-      - ./backend:/app
+      - ./predict:/app
     depends_on:
       - postgres
     expose: 
       - "9000"
+    networks:
+      - backend_network
+  history:
+    build: ./history
+    env_file: ./history/.env
+    volumes:
+      - ./history:/app
+    depends_on:
+      - postgres
+    expose:
+      - "9001"
+    networks:
+      - backend_network
+  userapi:
+    build: ./userapi
+    env_file: ./userapi/.env
+    volumes:
+      - ./userapi:/app
+    depends_on:
+      - postgres
+    expose:
+      - "9002"
     networks:
       - backend_network
   frontend:
@@ -36,9 +58,13 @@ services:
     ports:
       - 80:80
     links:
-      - backend
+      - predict
+      - history
+      - userapi
     depends_on:
-      - backend
+      - predict
+      - history
+      - userapi
     networks:
       - backend_network
   rabbitmq:
