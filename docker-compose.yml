@@ -24,12 +24,23 @@ services:
   history:
     build: ./history
     env_file: ./history/.env
+    command: ['python', 'config/manage.py', 'runserver', '0.0.0.0:9001']
     volumes:
       - ./history:/app
     depends_on:
       - postgres
     expose:
       - "9001"
+    networks:
+      - backend_network
+  history-celery:
+    build: ./history
+    env_file: ./history/.env
+    command: ['python', '-m', 'celery', '-A', 'userhistory', 'worker', '--loglevel=info']
+    volumes:
+      - ./history:/app
+    depends_on:
+      - postgres
     networks:
       - backend_network
   userapi:

@@ -19,6 +19,3 @@ RUN pip install --upgrade pip
 COPY . /app  
 # run this command to install all dependencies  
 RUN pip install -r requirements.txt  
-
-# start server  
-CMD python config/manage.py runserver 0.0.0.0:9001
