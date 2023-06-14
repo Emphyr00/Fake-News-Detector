@@ -10,50 +10,6 @@ services:
       - 5432:5432
     networks:
       - backend_network
-  predict:
-    build: ./predict
-    env_file: ./predict/.env
-    volumes: 
-      - ./predict:/app
-    depends_on:
-      - postgres
-    expose: 
-      - "9000"
-    networks:
-      - backend_network
-  history:
-    build: ./history
-    env_file: ./history/.env
-    command: ['python', 'config/manage.py', 'runserver', '0.0.0.0:9001']
-    volumes:
-      - ./history:/app
-    depends_on:
-      - postgres
-    expose:
-      - "9001"
-    networks:
-      - backend_network
-  history-celery:
-    build: ./history
-    env_file: ./history/.env
-    command: ['python', '-m', 'celery', '-A', 'userhistory', 'worker', '--loglevel=info']
-    volumes:
-      - ./history:/app
-    depends_on:
-      - postgres
-    networks:
-      - backend_network
-  userapi:
-    build: ./userapi
-    env_file: ./userapi/.env
-    volumes:
-      - ./userapi:/app
-    depends_on:
-      - postgres
-    expose:
-      - "9002"
-    networks:
-      - backend_network
   frontend:
     build: ./frontend
     volumes: 
@@ -69,13 +25,17 @@ services:
     ports:
       - 80:80
     links:
-      - predict
-      - history
-      - userapi
+      - authentication_service
     depends_on:
-      - predict
-      - history
-      - userapi
+      - authentication_service
+    networks:
+      - backend_network
+  authentication_service:
+    build: ./authentication_service
+    volumes: 
+      - ./authentication_service:/app
+    depends_on:
+      - postgres
     networks:
       - backend_network
   rabbitmq:

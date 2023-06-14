@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  postgres:
+    build: ./database
+    environment: 
+      - POSTGRES_PASSWORD=example
+    volumes: 
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - backend_network
+  authentication_service-migrate:
+    build: ./authentication_service/prisma
+    environment:
+      DATABASE_URL: 'postgres://postgres:example@postgres:5432/fake_news_detector_user_data?schema=public'
+    volumes: 
+      - ./authentication_service/prisma/migrations:/app/migrations
+    depends_on:
+      - postgres
+    networks:
+      - backend_network
+volumes:
+  db_data:
+
+networks:
+  backend_network:
