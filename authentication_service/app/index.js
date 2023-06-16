@@ -3,15 +3,10 @@ import { createServer } from 'http';
 import appConfig from './config/app.js';
 import AuthController from './api/AuthController.js';
 
-const asyncMiddleware = fn =>
-    (req, res, next) => {
-        Promise.resolve(fn(req, res, next))
-            .catch(next);
-    };
-
-
 var app = express();
 app.use(express.json());
+
+import('./rabbitMQ/rabbitListener.js')
 
 console.log('HTTP server running on port ' + appConfig.httpPort);
 
