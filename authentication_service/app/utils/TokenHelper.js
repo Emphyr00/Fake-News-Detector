@@ -19,52 +19,54 @@ export default class TokenHelper {
         }
     }
 
-    static async verify(providedToken) {
-        try {
-            var decodedProvided = jwt.verify(providedToken, token.tokenSecret);
-        } catch (err) {
-            console.log('Error verifing token: ' + err)
-            return false
-        }
-
-        console.log(decodedProvided.data)
-
-        try {
-            var user = await prisma.user.findUnique({
-                where: {
-                    id: decodedProvided.data,
-                },
-            });
-        } catch (error) {
-            console.error('Error querring user:', error);
-            return false
-        }
-
-        if (!user.token) {
-            return false;
-        }
-
-        try {
-            var decodedQueried = jwt.verify(user.token, token.tokenSecret);
-        } catch (err) {
+    static verify(providedToken) {
+        return new Promise((resolve, reject) => {
             try {
-                let updatedUser = await prisma.user.update({
+                var decodedProvided = jwt.verify(providedToken, token.tokenSecret);
+            } catch (err) {
+                console.log('Error verifing token: ' + err)
+                resolve(false)
+            }
+
+            console.log(decodedProvided.data)
+
+            try {
+                var user = prisma.user.findUnique({
                     where: {
-                        id: user.id,
-                    },
-                    data: {
-                        token: null,
+                        id: decodedProvided.data,
                     },
                 });
             } catch (error) {
-                console.error('Error updating user token:', error);
-                return false
+                console.error('Error querring user:', error);
+                resolve(false)
             }
 
-            console.log('Error verifing token: ' + err)
-            return false
-        }
+            if (!user.token) {
+                resolve(false);
+            }
 
-        return decodedQueried.data == decodedProvided.data ? true : false
+            try {
+                var decodedQueried = jwt.verify(user.token, token.tokenSecret);
+            } catch (err) {
+                try {
+                    let updatedUser = prisma.user.update({
+                        where: {
+                            id: user.id,
+                        },
+                        data: {
+                            token: null,
+                        },
+                    });
+                } catch (error) {
+                    console.error('Error updating user token:', error);
+                    resolve(false)
+                }
+
+                console.log('Error verifing token: ' + err)
+                resolve(false)
+            }
+            if (decodedQueried.data == decodedProvided.data) resolve(true)
+            else resolve(false)
+        })
     }
 }

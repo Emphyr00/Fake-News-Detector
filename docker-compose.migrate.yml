@@ -10,7 +10,7 @@ services:
       - 5432:5432
     networks:
       - backend_network
-  authentication_service-migrate:
+  services-migrate:
     build: ./authentication_service/prisma
     environment:
       DATABASE_URL: 'postgres://postgres:example@postgres:5432/fake_news_detector_user_data?schema=public'

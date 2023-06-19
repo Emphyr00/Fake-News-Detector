@@ -2,11 +2,18 @@ import express from 'express';
 import { createServer } from 'http';
 import appConfig from './config/app.js';
 import AuthController from './api/AuthController.js';
+import listen from './rabbitMQ/rabbitListener.js';
+import TokenHelper from './utils/TokenHelper.js';
 
 var app = express();
 app.use(express.json());
 
-import('./rabbitMQ/rabbitListener.js')
+listen('check-auth', async (data) => {
+    return await TokenHelper.verify(data).then((data) => {
+        console.log('test ' + data)
+        return data
+    })
+})
 
 console.log('HTTP server running on port ' + appConfig.httpPort);
 

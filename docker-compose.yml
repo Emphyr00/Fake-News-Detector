@@ -31,10 +31,22 @@ services:
     networks:
       - backend_network
   authentication_service:
+    restart: always
     build: ./authentication_service
     volumes: 
       - ./authentication_service:/app
     depends_on:
+      - rabbitmq
+      - postgres
+    networks:
+      - backend_network
+  predict_service:
+    restart: always
+    build: ./predict_service
+    volumes: 
+      - ./predict_service:/app
+    depends_on:
+      - rabbitmq
       - postgres
     networks:
       - backend_network
@@ -42,7 +54,7 @@ services:
     image: "rabbitmq:3-management"
     ports:
       - 15672:15672
-      - 5672:567
+      - 5672:5672
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
