@@ -4,5 +4,5 @@ dotenv.config();
 
 export default {
     saltRounds: process.env.PASS_SALT_ROUNDS ?? 10,
-    salt: '$2a$10$abcdefghabcdefghabcdefghab'
+    salt: process.env.PASS_SALT ?? '$2a$10$abcdefghabcdefghabcdefghab'
 }

@@ -35,6 +35,10 @@ export default function sendMessage(channelName, message, reply = true) {
 
             await channel.sendToQueue(channelName, Buffer.from(JSON.stringify(message)), options);
             // close the channel and connection
+
+            if (!reply) {
+                resolve(true)
+            }
         } catch (error) {
             reject(error);
         }

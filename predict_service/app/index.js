@@ -8,7 +8,7 @@ app.use(express.json());
 
 console.log('HTTP server running on port ' + appConfig.httpPort);
 
-app.post('/api/predict/text', async (req, res) => await PredictController.predict(req, res));
+app.post('/api/predict/text', async (req, res) => await PredictController.predictText(req, res));
 
 // app.post('/api/auth/register', async (req, res, next) => AuthController.register(req, res));
 

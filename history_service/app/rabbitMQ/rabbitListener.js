@@ -11,11 +11,11 @@ export default function listen(channelName, callback) {
             channel.prefetch(1);
 
             await channel.consume(channelName, data => {
-                var recived = JSON.parse(data.content.toString())
+                var recived = JSON.parse(data.content)
 
                 console.log(recived)
 
-                const content = callback(recived.token).then((result) => {
+                const content = callback(recived).then((result) => {
                     if (data.properties.replyTo) {
                         channel.sendToQueue(data.properties.replyTo,
                             Buffer.from(String(result)), {

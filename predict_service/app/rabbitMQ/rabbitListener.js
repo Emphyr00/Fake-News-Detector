@@ -1,7 +1,7 @@
 import * as amqp from 'amqplib'
 import rabbit from '../config/rabbit.js';
 
-export default function listen(channelName, message, callback) {
+export default function listen(channelName, callback) {
     return new Promise(async (resolve, reject) => {
         try {
             const connection = await amqp.connect(`amqp://${rabbit.username}:${rabbit.password}@rabbitmq`);
@@ -11,14 +11,18 @@ export default function listen(channelName, message, callback) {
             channel.prefetch(1);
 
             await channel.consume(channelName, data => {
-                callback(Buffer.from(data.content))
+                var recived = JSON.parse(data.content.toString())
 
-                if (data.properties.replyTo) {
-                    channel.sendToQueue(data.properties.replyTo,
-                        Buffer.from(1), {
-                        correlationId: data.properties.correlationId
-                    });
-                }
+                console.log(recived)
+
+                const content = callback(recived.token).then((result) => {
+                    if (data.properties.replyTo) {
+                        channel.sendToQueue(data.properties.replyTo,
+                            Buffer.from(String(result)), {
+                            correlationId: data.properties.correlationId
+                        });
+                    }
+                })
 
                 channel.ack(data)
             })

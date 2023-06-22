@@ -1,8 +1,9 @@
 import * as uuid from 'uuid';
 import sendMessage from "../rabbitMQ/rabbitSender.js";
+import prisma from '../database/prisma.js';
 
-export default class PredictController {
-    static async predictText(request, response) {
+export default class HistoryController {
+    static async get(request, response) {
         if (!request.body.token) {
             response.status(409)
             response.send(JSON.stringify({ 'error': "Token not provieded" }));
@@ -17,16 +18,13 @@ export default class PredictController {
             return;
         }
 
-        let predictionResult = await new Promise((resolve, reject) => {
-            resolve(Math.round(Math.random()));
-        })
-
-        await sendMessage('create-user-history', { user: authData.user, text: request.body.text, prediction: predictionResult }, false)
-
-        console.log('test')
+        let userHistory = await prisma.userHistoryEntry.findMany({
+            where: {
+                user_id: authData.user.id
+            }
+        });
 
         response.status(200)
-        response.send(JSON.stringify({ 'message': predictionResult }));
-        return;
+        response.send(JSON.stringify({ 'data': userHistory }));
     }
 }

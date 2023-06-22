@@ -9,9 +9,9 @@ var app = express();
 app.use(express.json());
 
 listen('check-auth', async (data) => {
-    return await TokenHelper.verify(data).then((data) => {
-        console.log('test ' + data)
-        return data
+    console.log(data)
+    return TokenHelper.verify(data).then((data) => {
+        return JSON.stringify(data)
     })
 })
 
