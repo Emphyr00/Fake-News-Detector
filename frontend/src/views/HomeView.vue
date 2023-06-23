@@ -1,15 +1,39 @@
 <script setup>
+import axiosInstance from '../helpers/axiosInstance';
+
 </script>
 
 <template>
   <div class="container">
-    <h1>Insert text to check if it's validity</h1>
-    <textarea></textarea>
+    <h1 style="color: green;" v-if="response === '1'">True</h1>
+    <h1 style="color: red;" v-else-if="response === '0'">False</h1>
+    <h1 v-else>Insert text to check if it's validity</h1>
+    <textarea v-model="text"></textarea>
     <div style="display: flex">
-      <button>Check</button>
+      <button v-on:click="predict">Check</button>
     </div>
   </div>
 </template>
+<script>
+export default {
+  data() {
+    return {
+      response: null,
+      text: '',
+    }
+  },
+  methods: {
+    predict() {
+      axiosInstance.post('/api/predict/text', {
+        'token': localStorage.token,
+        'text': this.text
+      }).then((response) => {
+        this.response = response.data.message
+      })
+    }
+  }
+}
+</script>
 
 <style scoped>
 textarea {

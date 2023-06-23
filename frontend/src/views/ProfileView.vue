@@ -1,14 +1,16 @@
 <template>
     <h1 class="fw-bolder text-dark">Your history</h1>
     <div class="list-container">
-        <HistoryItem v-for="item in listItems" :key="item.id" :content="item.content" :prediction="item.prediction"
-            :date="item.date">
+        <HistoryItem v-for="item in history" :key="item.id" :content="item.text" :prediction="item.is_fake"
+            :date="item.created_at">
         </HistoryItem>
     </div>
 </template>
   
 <script>
+import axios from 'axios';
 import HistoryItem from '../components/HistoryItem.vue';
+import axiosInstance from '../helpers/axiosInstance';
 
 export default {
     components: {
@@ -16,45 +18,22 @@ export default {
     },
     data() {
         return {
-            listItems: [
-                {
-                    id: 1,
-                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce euismod in sem eget iaculis. Sed interdum nunc eu magna dapibus tempus. Quisque ac nulla vel dui egestas tincidunt. Vivamus scelerisque sem ac lectus volutpat commodo. Aliquam sit amet orci in neque posuere lobortis sed id ex. Morbi finibus bibendum ex non tincidunt. Ut et est augue. Vivamus at dui magna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam pulvinar lacus eget urna volutpat venenatis. Suspendisse potenti. Sed nec aliquam leo. Curabitur interdum justo ut leo bibendum fringilla. Donec dapibus eros vitae purus tincidunt, ac suscipit neque gravida. Phasellus faucibus est nec feugiat aliquam.',
-                    prediction: true,
-                    date: '2023-06-10'
-                },
-                {
-                    id: 2,
-                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce euismod in sem eget iaculis. Sed interdum nunc eu magna dapibus tempus. Quisque ac nulla vel dui egestas tincidunt. Vivamus scelerisque sem ac lectus volutpat commodo. Aliquam sit amet orci in neque posuere lobortis sed id ex. Morbi finibus bibendum ex non tincidunt. Ut et est augue. Vivamus at dui magna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam pulvinar lacus eget urna volutpat venenatis. Suspendisse potenti. Sed nec aliquam leo. Curabitur interdum justo ut leo bibendum fringilla. Donec dapibus eros vitae purus tincidunt, ac suscipit neque gravida. Phasellus faucibus est nec feugiat aliquam.',
-                    prediction: false,
-                    date: '2023-06-11'
-                },
-                {
-                    id: 3,
-                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce euismod in sem eget iaculis. Sed interdum nunc eu magna dapibus tempus. Quisque ac nulla vel dui egestas tincidunt. Vivamus scelerisque sem ac lectus volutpat commodo. Aliquam sit amet orci in neque posuere lobortis sed id ex. Morbi finibus bibendum ex non tincidunt. Ut et est augue. Vivamus at dui magna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam pulvinar lacus eget urna volutpat venenatis. Suspendisse potenti. Sed nec aliquam leo. Curabitur interdum justo ut leo bibendum fringilla. Donec dapibus eros vitae purus tincidunt, ac suscipit neque gravida. Phasellus faucibus est nec feugiat aliquam.',
-                    prediction: true,
-                    date: '2023-06-10'
-                },
-                {
-                    id: 4,
-                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce euismod in sem eget iaculis. Sed interdum nunc eu magna dapibus tempus. Quisque ac nulla vel dui egestas tincidunt. Vivamus scelerisque sem ac lectus volutpat commodo. Aliquam sit amet orci in neque posuere lobortis sed id ex. Morbi finibus bibendum ex non tincidunt. Ut et est augue. Vivamus at dui magna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam pulvinar lacus eget urna volutpat venenatis. Suspendisse potenti. Sed nec aliquam leo. Curabitur interdum justo ut leo bibendum fringilla. Donec dapibus eros vitae purus tincidunt, ac suscipit neque gravida. Phasellus faucibus est nec feugiat aliquam.',
-                    prediction: false,
-                    date: '2023-06-11'
-                },
-                {
-                    id: 5,
-                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce euismod in sem eget iaculis. Sed interdum nunc eu magna dapibus tempus. Quisque ac nulla vel dui egestas tincidunt. Vivamus scelerisque sem ac lectus volutpat commodo. Aliquam sit amet orci in neque posuere lobortis sed id ex. Morbi finibus bibendum ex non tincidunt. Ut et est augue. Vivamus at dui magna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam pulvinar lacus eget urna volutpat venenatis. Suspendisse potenti. Sed nec aliquam leo. Curabitur interdum justo ut leo bibendum fringilla. Donec dapibus eros vitae purus tincidunt, ac suscipit neque gravida. Phasellus faucibus est nec feugiat aliquam.',
-                    prediction: true,
-                    date: '2023-06-10'
-                },
-                {
-                    id: 6,
-                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce euismod in sem eget iaculis. Sed interdum nunc eu magna dapibus tempus. Quisque ac nulla vel dui egestas tincidunt. Vivamus scelerisque sem ac lectus volutpat commodo. Aliquam sit amet orci in neque posuere lobortis sed id ex. Morbi finibus bibendum ex non tincidunt. Ut et est augue. Vivamus at dui magna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam pulvinar lacus eget urna volutpat venenatis. Suspendisse potenti. Sed nec aliquam leo. Curabitur interdum justo ut leo bibendum fringilla. Donec dapibus eros vitae purus tincidunt, ac suscipit neque gravida. Phasellus faucibus est nec feugiat aliquam.',
-                    prediction: false,
-                    date: '2023-06-11'
-                }
-            ]
+            history: null,
         };
+    },
+    methods: {
+        getHistory() {
+            axiosInstance.get('/api/history', {
+                params: {
+                    token: localStorage.token
+                }
+            }).then((response) => {
+                this.history = response.data.data
+            })
+        }
+    },
+    mounted() {
+        this.getHistory();
     }
 };
 </script>

@@ -6,7 +6,7 @@ import router from './router'
 
 const app = createApp(App)
 
-app.config.globalProperties.token = null;
+app.config.globalProperties.$token = null;
 
 app.use(router)
 

@@ -4,12 +4,12 @@ import prisma from '../database/prisma.js';
 
 export default class HistoryController {
     static async get(request, response) {
-        if (!request.body.token) {
+        if (!request.query.token) {
             response.status(409)
             response.send(JSON.stringify({ 'error': "Token not provieded" }));
             return;
         }
-        let authData = await sendMessage('check-auth', { token: request.body.token })
+        let authData = await sendMessage('check-auth', { token: request.query.token })
         authData = JSON.parse(authData)
 
         if (authData.status === false) {

@@ -13,14 +13,17 @@ import { RouterLink, RouterView } from 'vue-router'
       <div class="menu-element">
         <RouterLink to="about">About</RouterLink>
       </div>
-      <div class="menu-element" v-if="token == 'null' || !token">
+      <div class="menu-element" v-if="!token">
         <RouterLink to="login">Login</RouterLink>
       </div>
-      <div v-if="token == 'null' || !token" class="menu-element">
+      <div v-if="!token" class="menu-element">
         <RouterLink to="register">Register</RouterLink>
       </div>
-      <div v-if="token != 'null' && token" class="menu-element" style="margin-left: auto;">
+      <div v-if="token" class="menu-element" style="margin-left: auto;">
         <RouterLink to="profile">Profile</RouterLink>
+      </div>
+      <div v-if="token" class="menu-element" style="margin-left: auto;">
+        <a v-on:click="logout" style="cursor: pointer;">Logout</a>
       </div>
     </div>
     <RouterView />
@@ -30,7 +33,7 @@ import { RouterLink, RouterView } from 'vue-router'
 export default {
   data() {
     return {
-      localToken: this.token
+      token: localStorage.token
     }
   },
   mounted() {
@@ -39,6 +42,13 @@ export default {
       console.log(this.token)
     }
   },
+  methods: {
+    logout() {
+      this.token = null;
+      localStorage.setItem('token', '')
+      window.location.href = "/";
+    }
+  }
 }
 </script>
 
@@ -57,7 +67,6 @@ export default {
 }
 
 .menu-element {
-  max-width: 20%;
   text-align: center;
   flex-grow: 1;
 }
