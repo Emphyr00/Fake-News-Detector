@@ -17,9 +17,8 @@ export default class PredictController {
             return;
         }
 
-        let predictionResult = await new Promise((resolve, reject) => {
-            resolve(Math.round(Math.random()));
-        })
+        let predictionResult = await sendMessage('predict', { text: request.body.text }, true)
+        console.log(predictionResult)
 
         await sendMessage('create-user-history', { user: authData.user, text: request.body.text, prediction: predictionResult }, false)
 

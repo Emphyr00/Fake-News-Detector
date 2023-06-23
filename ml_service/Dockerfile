@@ -21,4 +21,4 @@ COPY . /app
 RUN pip install -r requirements.txt  
 
 # start server  
-CMD python config/manage.py runserver 0.0.0.0:9000
+CMD python __init__.py

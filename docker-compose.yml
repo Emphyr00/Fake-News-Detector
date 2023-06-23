@@ -60,6 +60,16 @@ services:
       - postgres
     networks:
       - backend_network
+  ml_service:
+    restart: always
+    build: ./ml_service
+    volumes: 
+      - ./ml_service:/app
+    depends_on:
+      - rabbitmq
+      - postgres
+    networks:
+      - backend_network
   rabbitmq:
     image: "rabbitmq:3-management"
     ports:
