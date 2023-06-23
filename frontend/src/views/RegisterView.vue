@@ -51,6 +51,7 @@ export default {
                 'email': this.email,
                 'password': this.password
             }).then((response) => {
+                this.errorMessage = 'User Created'
                 console.log(response)
             })
         }
