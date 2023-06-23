@@ -1,24 +1,46 @@
 <script setup>
+import axiosInstance from '../helpers/axiosInstance';
+
 </script>
 <template>
     <div>
         <h1 class="fw-bolder text-dark">Login</h1>
-        <div class="form-container">
-            <form>
-                <div class="form-floating mb-3 input-container">
-                    <input class="form-control" type="string" name="username" placeholder="Username" required>
-                </div>
-                <div class="form-floating mb-3 input-container">
-                    <input class="form-control" type="password" name="password" placeholder="Password" required>
-                </div>
-                <div class="button-container">
-                    <button type="submit">Login</button>
-                </div>
-            </form>
+        <div class="container" style="max-width: 500px;">
+            <div class="form-floating mb-3 input-container">
+                <input v-model="email" class="form-control" type="string" name="username" placeholder="Username" required>
+            </div>
+            <div class="form-floating mb-3 input-container">
+                <input v-model="password" class="form-control" type="password" name="password" placeholder="Password"
+                    required>
+            </div>
+            <div class="button-container">
+                <button v-on:click="login">Login</button>
+            </div>
         </div>
     </div>
 </template>
-
+<script>
+import axiosInstance from '../helpers/axiosInstance';
+export default {
+    data() {
+        return {
+            email: '',
+            password: '',
+        }
+    },
+    methods: {
+        login() {
+            axiosInstance.post('/api/auth/login', {
+                'email': this.email,
+                'password': this.password
+            }).then((response) => {
+                this.token = response.data.token
+                localStorage.setItem('token', response.data.token);
+            })
+        }
+    }
+}
+</script>
 <style>
 button {
     display: inline-block;

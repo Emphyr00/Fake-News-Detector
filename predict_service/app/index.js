@@ -2,9 +2,13 @@ import express from 'express';
 import { createServer } from 'http';
 import appConfig from './config/app.js';
 import PredictController from './api/PredictController.js';
+import cors from "cors";
 
 var app = express();
 app.use(express.json());
+app.use(cors({
+    origin: '*'
+}));
 
 console.log('HTTP server running on port ' + appConfig.httpPort);
 

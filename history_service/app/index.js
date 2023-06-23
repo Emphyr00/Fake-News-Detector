@@ -4,9 +4,13 @@ import appConfig from './config/app.js';
 import HistoryController from './api/HistoryController.js';
 import HistoryHelper from './utils/HistoryHelper.js';
 import listen from './rabbitMQ/rabbitListener.js';
+import cors from "cors";
 
 var app = express();
 app.use(express.json());
+app.use(cors({
+    origin: '*'
+}));
 
 console.log('HTTP server running on port ' + appConfig.httpPort);
 

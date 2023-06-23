@@ -4,9 +4,13 @@ import appConfig from './config/app.js';
 import AuthController from './api/AuthController.js';
 import listen from './rabbitMQ/rabbitListener.js';
 import TokenHelper from './utils/TokenHelper.js';
+import cors from "cors";
 
 var app = express();
 app.use(express.json());
+app.use(cors({
+    origin: '*'
+}));
 
 listen('check-auth', async (data) => {
     console.log(data)

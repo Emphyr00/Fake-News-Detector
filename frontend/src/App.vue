@@ -11,9 +11,9 @@ import { RouterLink, RouterView } from 'vue-router'
         <RouterLink to="/">Home</RouterLink>
       </div>
       <div class="menu-element">
-        <RouterLink to="login">Login</RouterLink>
+        <RouterLink v-if="token == null" to="login">Login</RouterLink>
       </div>
-      <div class="menu-element">
+      <div v-if="token == null" class="menu-element">
         <RouterLink to="register">Register</RouterLink>
       </div>
       <div class="menu-element">
@@ -26,6 +26,16 @@ import { RouterLink, RouterView } from 'vue-router'
     <RouterView />
   </div>
 </template>
+<script>
+export default {
+  mounted() {
+    if (localStorage.token) {
+      this.token = localStorage.token;
+      console.log(this.token)
+    }
+  },
+}
+</script>
 
 <style scoped>
 .title {

@@ -1,34 +1,35 @@
 <template>
     <h1 class="fw-bolder text-dark">Register</h1>
-    <div class="form-container">
-        <form>
-            <div class="form-floating mb-3 input-container">
-                <input class="form-control" name="username" type="text" placeholder="Username" pattern=".{3,}"
-                    title="Username must have at least 3 characters" required>
-            </div>
-            <div class="form-floating mb-3 input-container">
-                <input class="form-control" name="email" type="email" placeholder="E-mail address" required>
-            </div>
-            <div class="form-floating mb-3 input-container">
-                <input v-model="password" class="form-control" name="password" type="password" placeholder="Password"
-                    pattern=".{8,}" title="Password must have at least 8 characters" required>
-            </div>
-            <div class="form-floating mb-3 input-container">
-                <input v-model="password2" class="form-control" name="password2" type="password"
-                    placeholder="Confirm password" v-on:input="validatePassword" required>
-            </div>
-            <p class="error-message" v-if="errorMessage">{{ errorMessage }}</p>
-            <div class="button-container">
-                <button type="submit">Register</button>
-            </div>
-        </form>
+    <div class="container" style="max-width: 500px;">
+        <div class="form-floating mb-3 input-container">
+            <input v-model="name" class="form-control" type="text" placeholder="Username" pattern=".{3,}"
+                title="Username must have at least 3 characters" required>
+        </div>
+        <div class="form-floating mb-3 input-container">
+            <input v-model="email" class="form-control" type="email" placeholder="E-mail address" required>
+        </div>
+        <div class="form-floating mb-3 input-container">
+            <input v-model="password" class="form-control" type="password" placeholder="Password" pattern=".{8,}"
+                title="Password must have at least 8 characters" required>
+        </div>
+        <div class="form-floating mb-3 input-container">
+            <input v-model="password2" class="form-control" type="password" placeholder="Confirm password"
+                v-on:input="validatePassword" required>
+        </div>
+        <p class="error-message" v-if="errorMessage">{{ errorMessage }}</p>
+        <div class="button-container">
+            <button v-on:click="register">Register</button>
+        </div>
     </div>
 </template>
 
 <script>
+import axiosInstance from '../helpers/axiosInstance';
 export default {
     data() {
         return {
+            name: '',
+            email: '',
             password: '',
             password2: '',
             errorMessage: '',
@@ -43,6 +44,16 @@ export default {
             this.errorMessage = '';
             return true;
         },
+
+        register() {
+            axiosInstance.post('/api/auth/register', {
+                'name': this.name,
+                'email': this.email,
+                'password': this.password
+            }).then((response) => {
+                console.log(response)
+            })
+        }
     }
 
 };
