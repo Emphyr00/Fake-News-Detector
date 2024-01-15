@@ -25,10 +25,40 @@ jobs:
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
 
-    - name: Qodana Scan
+    - name: Qodana Code Analysis - Frontend
       uses: JetBrains/qodana-action@v2023.3
       env:
         QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+      with:
+        project-dir: '/frontend'
+    
+    - name: Qodana Code Analysis - authentication_service
+      uses: JetBrains/qodana-action@v2023.3
+      env:
+        QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+      with:
+        project-dir: '/authentication_service'
+
+    - name: Qodana Code Analysis - history_service
+      uses: JetBrains/qodana-action@v2023.3
+      env:
+        QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+      with:
+        project-dir: '/history_service'
+
+    - name: Qodana Code Analysis - ml_service
+      uses: JetBrains/qodana-action@v2023.3
+      env:
+        QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+      with:
+        project-dir: '/ml_service'
+
+    - name: Qodana Code Analysis - predict_service
+      uses: JetBrains/qodana-action@v2023.3
+      env:
+        QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+      with:
+        project-dir: '/predict_service'
 
     - name: Extract Tag Name
       id: get_tag
