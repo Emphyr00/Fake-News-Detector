@@ -3,121 +3,138 @@ name: Docker Image CI to Azure CR
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
-   build-and-push:
+  build-and-push:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
       checks: write
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-    - name: Login to Azure Container Registry
-      uses: docker/login-action@v1
-      with:
-        registry: ${{ secrets.ACR_REGISTRY_NAME }}
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
+      - name: Login to Azure Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.ACR_REGISTRY_NAME }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
-    - name: Qodana Code Analysis - frontend
-      uses: JetBrains/qodana-action@v2023.3
-      env:
-        QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
-      with:
-        args: --project-dir,frontend
-    
-    - name: Qodana Code Analysis - authentication_service
-      uses: JetBrains/qodana-action@v2023.3
-      env:
-        QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
-      with:
-        args: --project-dir,authentication_service
+      - name: Test authentication_service
+        run: |
+          cd ./authentication_service
+          npm install
+          npm test
 
-    - name: Qodana Code Analysis - history_service
-      uses: JetBrains/qodana-action@v2023.3
-      env:
-        QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
-      with:
-        args: --project-dir,history_service
+      - name: Test history_service
+        run: |
+          cd ./history_service
+          npm install
+          npm test
 
-    - name: Qodana Code Analysis - ml_service
-      uses: JetBrains/qodana-action@v2023.3
-      env:
-        QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
-      with:
-        args: --project-dir,ml_service
+      - name: Test predict_service
+        run: |
+          cd ./predict_service
+          npm install
+          npm test
 
-    - name: Qodana Code Analysis - predict_service
-      uses: JetBrains/qodana-action@v2023.3
-      env:
-        QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
-      with:
-        args: --project-dir,predict_service
+      - name: Qodana Code Analysis - frontend
+        uses: JetBrains/qodana-action@v2023.3
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        with:
+          args: --project-dir,frontend
 
-    - name: Extract Tag Name
-      id: get_tag
-      run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - name: Qodana Code Analysis - authentication_service
+        uses: JetBrains/qodana-action@v2023.3
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        with:
+          args: --project-dir,authentication_service
 
-    - name: Build and push PostgreSQL
-      uses: docker/build-push-action@v2
-      with:
-        context: ./database
-        file: ./database/Dockerfile
-        push: true
-        tags: ${{ secrets.ACR_REGISTRY_NAME }}/postgres:${{ env.RELEASE_TAG }}
-        build-args:
-          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+      - name: Qodana Code Analysis - history_service
+        uses: JetBrains/qodana-action@v2023.3
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        with:
+          args: --project-dir,history_service
 
-    - name: Build and push Frontend
-      uses: docker/build-push-action@v2
-      with:
-        context: ./frontend
-        file: ./frontend/Dockerfile
-        push: true
-        tags: ${{ secrets.ACR_REGISTRY_NAME }}/frontend:${{ env.RELEASE_TAG }}
+      - name: Qodana Code Analysis - ml_service
+        uses: JetBrains/qodana-action@v2023.3
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        with:
+          args: --project-dir,ml_service
 
-    - name: Build and push Nginx
-      uses: docker/build-push-action@v2
-      with:
-        context: ./proxy
-        file: ./proxy/Dockerfile
-        push: true
-        tags: ${{ secrets.ACR_REGISTRY_NAME }}/nginx:${{ env.RELEASE_TAG }}
+      - name: Qodana Code Analysis - predict_service
+        uses: JetBrains/qodana-action@v2023.3
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        with:
+          args: --project-dir,predict_service
 
-    - name: Build and push Authentication Service
-      uses: docker/build-push-action@v2
-      with:
-        context: ./authentication_service
-        file: ./authentication_service/Dockerfile
-        push: true
-        tags: ${{ secrets.ACR_REGISTRY_NAME }}/authentication_service:${{ env.RELEASE_TAG }}
+      - name: Extract Tag Name
+        id: get_tag
+        run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-    - name: Build and push Predict Service
-      uses: docker/build-push-action@v2
-      with:
-        context: ./predict_service
-        file: ./predict_service/Dockerfile
-        push: true
-        tags: ${{ secrets.ACR_REGISTRY_NAME }}/predict_service:${{ env.RELEASE_TAG }}
+      - name: Build and push PostgreSQL
+        uses: docker/build-push-action@v2
+        with:
+          context: ./database
+          file: ./database/Dockerfile
+          push: true
+          tags: ${{ secrets.ACR_REGISTRY_NAME }}/postgres:${{ env.RELEASE_TAG }}
+          build-args: POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
 
-    - name: Build and push History Service
-      uses: docker/build-push-action@v2
-      with:
-        context: ./history_service
-        file: ./history_service/Dockerfile
-        push: true
-        tags: ${{ secrets.ACR_REGISTRY_NAME }}/history_service:${{ env.RELEASE_TAG }}
+      - name: Build and push Frontend
+        uses: docker/build-push-action@v2
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: ${{ secrets.ACR_REGISTRY_NAME }}/frontend:${{ env.RELEASE_TAG }}
 
-    - name: Build and push ML Service
-      uses: docker/build-push-action@v2
-      with:
-        context: ./ml_service
-        file: ./ml_service/Dockerfile
-        push: true
-        tags: ${{ secrets.ACR_REGISTRY_NAME }}/ml_service:${{ env.RELEASE_TAG }}
+      - name: Build and push Nginx
+        uses: docker/build-push-action@v2
+        with:
+          context: ./proxy
+          file: ./proxy/Dockerfile
+          push: true
+          tags: ${{ secrets.ACR_REGISTRY_NAME }}/nginx:${{ env.RELEASE_TAG }}
+
+      - name: Build and push Authentication Service
+        uses: docker/build-push-action@v2
+        with:
+          context: ./authentication_service
+          file: ./authentication_service/Dockerfile
+          push: true
+          tags: ${{ secrets.ACR_REGISTRY_NAME }}/authentication_service:${{ env.RELEASE_TAG }}
+
+      - name: Build and push Predict Service
+        uses: docker/build-push-action@v2
+        with:
+          context: ./predict_service
+          file: ./predict_service/Dockerfile
+          push: true
+          tags: ${{ secrets.ACR_REGISTRY_NAME }}/predict_service:${{ env.RELEASE_TAG }}
+
+      - name: Build and push History Service
+        uses: docker/build-push-action@v2
+        with:
+          context: ./history_service
+          file: ./history_service/Dockerfile
+          push: true
+          tags: ${{ secrets.ACR_REGISTRY_NAME }}/history_service:${{ env.RELEASE_TAG }}
+
+      - name: Build and push ML Service
+        uses: docker/build-push-action@v2
+        with:
+          context: ./ml_service
+          file: ./ml_service/Dockerfile
+          push: true
+          tags: ${{ secrets.ACR_REGISTRY_NAME }}/ml_service:${{ env.RELEASE_TAG }}
