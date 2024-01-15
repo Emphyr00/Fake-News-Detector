@@ -30,7 +30,7 @@ jobs:
       env:
         QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
       with:
-        args: '--project-dir /frontend'
+        args: -i /frontend
     
     - name: Qodana Code Analysis - authentication_service
       uses: JetBrains/qodana-action@v2023.3
