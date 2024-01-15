@@ -8,6 +8,10 @@ on:
 jobs:
    build-and-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
     steps:
     - uses: actions/checkout@v2
 
@@ -21,6 +25,11 @@ jobs:
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
 
+    - name: 'Qodana Scan'
+        uses: JetBrains/qodana-action@v2023.3
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+          
     - name: Extract Tag Name
       id: get_tag
       run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
@@ -34,6 +43,15 @@ jobs:
         tags: ${{ secrets.ACR_REGISTRY_NAME }}/postgres:${{ env.RELEASE_TAG }}
         build-args:
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+
+     # Code Inspector Analysis
+    - name: Run Code Inspector Analysis
+      uses: codeinspectorio/github-action@master
+      with:
+        token: ${{ secrets.CODE_INSPECTOR_TOKEN }}
+        project_name: "<Your_Code_Inspector_Project_Name>"
+        # Optional: fail the job on low score
+        threshold: 80
 
     - name: Build and push Frontend
       uses: docker/build-push-action@v2
