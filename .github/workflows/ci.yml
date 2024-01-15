@@ -44,15 +44,6 @@ jobs:
         build-args:
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
 
-     # Code Inspector Analysis
-    - name: Run Code Inspector Analysis
-      uses: codeinspectorio/github-action@master
-      with:
-        token: ${{ secrets.CODE_INSPECTOR_TOKEN }}
-        project_name: "<Your_Code_Inspector_Project_Name>"
-        # Optional: fail the job on low score
-        threshold: 80
-
     - name: Build and push Frontend
       uses: docker/build-push-action@v2
       with:
