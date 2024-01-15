@@ -50,16 +50,6 @@ jobs:
         file: ./proxy/Dockerfile
         push: true
         tags: ${{ secrets.ACR_REGISTRY_NAME }}/nginx:${{ env.RELEASE_TAG }}
-    
-    - name: Build and push PostgreSQL
-      uses: docker/build-push-action@v2
-      with:
-        context: ./database
-        file: ./database/Dockerfile
-        push: true
-        tags: ${{ secrets.ACR_REGISTRY_NAME }}/postgres:${{ env.RELEASE_TAG }}
-        build-args:
-          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
 
     - name: Build and push Authentication Service
       uses: docker/build-push-action@v2
