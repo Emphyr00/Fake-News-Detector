@@ -26,9 +26,9 @@ jobs:
         password: ${{ secrets.ACR_PASSWORD }}
 
     - name: Qodana Scan
-        uses: JetBrains/qodana-action@v2023.3
-        env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+      uses: JetBrains/qodana-action@v2023.3
+      env:
+        QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
 
     - name: Extract Tag Name
       id: get_tag
