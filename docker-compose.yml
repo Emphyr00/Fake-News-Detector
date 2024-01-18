@@ -27,8 +27,6 @@ services:
       - 80:80
     links:
       - authentication_service
-    depends_on:
-      - authentication_service
     networks:
       - backend_network
   authentication_service:
