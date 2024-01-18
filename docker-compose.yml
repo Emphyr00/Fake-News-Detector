@@ -16,6 +16,7 @@ services:
       - ./frontend:/app
     depends_on:
       - postgres
+      - nginx
     ports:
       - 8080:8080
     extra_hosts:
@@ -38,6 +39,7 @@ services:
     depends_on:
       - rabbitmq
       - postgres
+      - nginx
     networks:
       - backend_network
   predict_service:
@@ -48,6 +50,7 @@ services:
     depends_on:
       - rabbitmq
       - postgres
+      - nginx
     networks:
       - backend_network
   history_service:
@@ -58,6 +61,7 @@ services:
     depends_on:
       - rabbitmq
       - postgres
+      - nginx
     networks:
       - backend_network
   ml_service:
@@ -68,6 +72,7 @@ services:
     depends_on:
       - rabbitmq
       - postgres
+      - nginx
     networks:
       - backend_network
   rabbitmq:
