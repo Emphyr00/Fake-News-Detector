@@ -10,14 +10,6 @@ nltk.download('stopwords')
 device = torch.device("cpu")
 
 def remove_puncts_and_censored_words(text: str) -> str:
-    """Removes censored words and punctuations from the text
-
-    Args:
-        text (str): news feature columm
-
-    Returns:
-        str: preprocessed text
-    """
     # Remove censored words
     censor_removed = " ".join([word for word in text.split(" ") if '*' not in word])
     # Remove punctuations
@@ -28,38 +20,14 @@ def remove_puncts_and_censored_words(text: str) -> str:
     return single_spaced
 
 def word_tokenize(text: str) -> list[str]:
-    """Splits text into words
-
-    Args:
-        text (str): preprocessed text
-
-    Returns:
-        list(str): word tokens
-    """
     return text.split(" ")
 
 def remove_stopwords(tokens: list[str]) -> list[str]:
-    """Removes stopwords from the tokens
-
-    Args:
-        tokens (list[str]): word tokens
-
-    Returns:
-        list[str]: word tokens with stop words removed
-    """
-
     stopwords = nltk.corpus.stopwords.words('english')
     return [t for t in tokens if t not in stopwords]
 
 def preprocess(text: str) ->list[str]:
-    """Preprocesses the text
 
-    Args:
-        text (str): news feature column
-
-    Returns:
-        list[str]: preprocessed tokens
-    """
     preprocessed = remove_puncts_and_censored_words(text)
     preprocessed = word_tokenize(preprocessed)
     preprocessed = remove_stopwords(preprocessed)
@@ -67,17 +35,6 @@ def preprocess(text: str) ->list[str]:
     return preprocessed
 
 def pad(text: list[int], pad_length: int) -> list[int]:
-    """If the text is less than pad_length, pads the text with 0s at the beginning.
-    If the text is greater than pad_length, truncates the text to pad_length.
-    If the text is equal to pad_length, returns the text as it is.
-
-    Args:
-        text (list[int]): preprocessed tokens
-        pad_length (int): length to pad the text to
-
-    Returns:
-        list[int]: padded text
-    """
     if len(text) < pad_length:
         pad_arr = [0] * (pad_length - len(text))
         return pad_arr + text
@@ -129,7 +86,6 @@ def prepareText(text):
 
 
 def predict(text):
-    print(device)
     vocab_size = 254575
     embedding_dim = 512
     hidden_dim = 400
@@ -137,15 +93,14 @@ def predict(text):
     n_classes = 2
     test_model = NewsClassifier(vocab_size=vocab_size, embedding_dim=embedding_dim, hidden_dim=hidden_dim
                        , n_layers=n_layers, n_classes=n_classes).to(device)
-    loaded_model = torch.load('./resources/fake_news_model.pth', map_location=device)
+    loaded_model = torch.load('./resources/model_20_01_16_20.pth', map_location=device)
     test_model.load_state_dict(loaded_model)
-
-
     test_model.eval()
     with torch.no_grad():
         text = torch.tensor(text, dtype=torch.int32).reshape(1, 300)
         text = text.to(device)
         outputs = test_model(text)
+        print(outputs)
         preds = torch.round(outputs)
         print(preds)
         print(preds.item())
@@ -154,7 +109,6 @@ def predict(text):
             return 1
         else:
             return 0
-    # return int(preds.item())
 
 
 def callback(channel, method, properties, body):
