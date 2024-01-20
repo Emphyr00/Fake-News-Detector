@@ -1,0 +1,7 @@
+{
+  "name": "Fake News Detector",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}

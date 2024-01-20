@@ -22,6 +22,7 @@ import { IonicVue } from '@ionic/vue';
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+//import { registerSW } from 'virtual:pwa-register';
 
 const app = createApp(App)
 
@@ -29,6 +30,14 @@ app.config.globalProperties.$token = null;
 
 app.use(IonicVue)
 app.use(router)
+
+
+//if ('serviceWorker' in navigator) {
+// Uncomment the following line if you want to exclude service worker registration during local development
+// if (!import.meta.env.DEV) {
+//    registerSW();
+// }
+//}
 
 //app.mount('#app')
 router.isReady().then(() => {
