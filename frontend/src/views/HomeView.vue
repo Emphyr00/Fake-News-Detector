@@ -10,7 +10,17 @@ import axiosInstance from '../helpers/axiosInstance';
     <h1 v-else>Insert text to check if it's validity</h1>
     <textarea v-model="text"></textarea>
     <div style="display: flex">
-      <button v-on:click="predict">Check</button>
+      <template v-if="!isChecked">
+        <button v-if="!showUploadButton" v-on:click="loadFile">Upload file</button>
+        <button v-on:click="predict">Check</button>
+      </template>
+      <template v-if="isChecked">
+        <button v-if="fileUploaded" v-on:click="saveChanges">Save to the uploaded file</button>
+        <button v-on:click="saveNewFile">Save as a new file</button>
+        <button v-on:click="clearAll">Clear</button>
+      </template>
+
+      
     </div>
   </div>
 </template>
@@ -18,18 +28,94 @@ import axiosInstance from '../helpers/axiosInstance';
 export default {
   data() {
     return {
+      loading: false,
       response: null,
       text: '',
+      fileHandle: '',
+      fileUploaded: false,
+      isChecked: false
     }
   },
   methods: {
     predict() {
+      this.loading = true;
       axiosInstance.post('/api/predict/text', {
         'token': localStorage.token,
         'text': this.text
       }).then((response) => {
-        this.response = response.data.message
+        this.response = response.data.message;
+        this.isChecked = true;
+        this.loading = false;
       })
+    },
+
+    //here we are using File System Access from Fugu project
+    //https://fugu-tracker.web.app/#file-system-access
+    async loadFile() {
+      const options = {
+        types: [
+          {
+            description: 'Text Files',
+            accept: {
+              'text/plain': ['.txt'],
+            },
+          },
+        ],
+      };
+      [this.fileHandle] = await window.showOpenFilePicker(options);
+      this.loading = true;
+      const file = await this.fileHandle.getFile();
+      const contents = await file.text();
+      console.log('CONTENTS: ' + contents);
+      this.text = contents;
+      this.fileUploaded = true;
+      this.loading = false;
+    },
+
+    clearAll() {
+      this.response = null;
+      this.text = '';
+      this.fileHandle = '';
+      this.fileUploaded = false;
+      this.isChecked = false;
+    },
+
+    async saveChanges() {
+      this.loading = true;
+      const writable = await this.fileHandle.createWritable();
+      const result = 'True';
+      if (this.response === 0) {
+        result = 'False';
+      }
+      const contents = this.text + '\n' + 'FAKE NEWS DETECTOR RESULT: ' + result;
+      await writable.write(contents);
+      await writable.close();
+      this.loading = false;
+    },
+
+    async saveNewFile() {
+      const options = {
+      suggestedName: 'Fake_News_Detector_Result.txt',
+        types: [
+          {
+            description: 'Text Files',
+            accept: {
+              'text/plain': ['.txt'],
+            },
+          },
+        ],
+      };
+      const newFileHandle = await window.showSaveFilePicker(options);
+      this.loading - true;
+      const writable = await newFileHandle.createWritable();
+      const result = 'True';
+      if (this.response === 0) {
+        result = 'False';
+      }
+      const contents = this.text + '\n' + 'FAKE NEWS DETECTOR RESULT: ' + result;
+      await writable.write(contents);
+      await writable.close();
+      this.loading = false;
     }
   }
 }
@@ -67,4 +153,6 @@ button:hover {
   background-color: darkgray;
   color: black;
 }
+
+
 </style>
