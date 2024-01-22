@@ -1,6 +1,5 @@
 <script setup>
 import axiosInstance from '../helpers/axiosInstance';
-
 </script>
 
 <template>
@@ -20,12 +19,12 @@ import axiosInstance from '../helpers/axiosInstance';
         <button v-on:click="clearAll">Clear</button>
       </template>
 
-      
     </div>
   </div>
 </template>
 <script>
 export default {
+
   data() {
     return {
       loading: false,

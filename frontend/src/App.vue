@@ -4,7 +4,10 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <template>
   <div class="container">
-    <h1 class="title">Fake News Detector</h1>
+    <div class="header">
+      <h1 class="title">Fake News Detector</h1>
+      <img class="logo" src="./assets/search.png" alt="Logo">
+    </div>
     <hr>
     <div class="constainer menu-container">
       <div class="menu-element">
@@ -46,23 +49,44 @@ export default {
     logout() {
       this.token = null;
       localStorage.setItem('token', '')
-      window.location.href = "/";
+      window.location.href = "/login";
     }
   }
 }
 </script>
 
 <style scoped>
-.title {
+/*.title {
   font-size: 80px;
   font-weight: 3;
+}*/
+
+.header {
+  padding-top: 5%;
+  text-align: center;
+  align-items: center;
 }
+.header img {
+  width: 9rem;
+  height: 9rem;
+  margin-left: 3%;
+}
+
+.header h1 {
+  display: inline;
+  font-size: 5rem;
+  font-weight: 3;
+  padding-top: 10%;
+  position: relative;
+  padding-right: 3%;
+}
+
 
 .menu-container {
   margin-top: 50px;
   display: flex;
   gap: 20px;
-  font-size: 30px;
+  font-size: 1.5em;
   margin-bottom: 100px;
 }
 
@@ -76,5 +100,13 @@ export default {
   background-color: darkgray;
   color: black
 }
+
+@media (max-width: 600px) {
+    .menu-element {
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+
 </style>
 

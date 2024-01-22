@@ -1,9 +1,11 @@
 <template>
     <h1 class="fw-bolder text-dark">Your history</h1>
-    <div class="list-container">
-        <HistoryItem v-for="item in history" :key="item.id" :content="item.text" :prediction="item.is_fake"
-            :date="item.created_at">
-        </HistoryItem>
+    <div class="main-container">
+        <div class="list-container">
+            <HistoryItem v-for="item in history" :key="item.id" :content="item.text" :prediction="item.is_fake"
+                :date="item.created_at">
+            </HistoryItem>
+        </div>
     </div>
 </template>
   
@@ -45,7 +47,7 @@ h1 {
 
 .list-container {
     margin-top: 50px;
-    height: 40rem;
+    max-height: 35rem;
     overflow-y: auto;
 }
 
@@ -67,5 +69,9 @@ h1 {
 
 .list-container::-webkit-scrollbar-thumb:hover {
     background-color: rgba(0, 0, 0, 0.7);
+}
+
+.main-container {
+    padding-bottom: 6rem;
 }
 </style>

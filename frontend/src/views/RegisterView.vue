@@ -53,6 +53,10 @@ export default {
             }).then((response) => {
                 this.errorMessage = 'User Created'
                 console.log(response)
+            }).catch((response) => {
+                console.log(response)
+                console.log(response.response.data)
+                this.errorMessage = response.response.data.error
             })
         }
     }

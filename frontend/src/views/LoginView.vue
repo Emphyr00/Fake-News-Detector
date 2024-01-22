@@ -13,6 +13,7 @@ import axiosInstance from '../helpers/axiosInstance';
                 <input v-model="password" class="form-control" type="password" name="password" placeholder="Password"
                     required>
             </div>
+            <p class="error-message" v-if="errorMessage">{{ errorMessage }}</p>
             <div class="button-container">
                 <button v-on:click="login">Login</button>
             </div>
@@ -21,11 +22,13 @@ import axiosInstance from '../helpers/axiosInstance';
 </template>
 <script>
 import axiosInstance from '../helpers/axiosInstance';
+
 export default {
     data() {
         return {
             email: '',
             password: '',
+            errorMessage: ''
         }
     },
     methods: {
@@ -34,9 +37,12 @@ export default {
                 'email': this.email,
                 'password': this.password
             }).then((response) => {
-                this.token = response.data.token
+                this.token = response.data.token;
                 localStorage.setItem('token', response.data.token);
-                window.location.reload();
+                //window.location.reload();
+                this.$router.push('/');
+            }).catch((error) => {
+                this.errorMessage = error.response.data.error
             })
         }
     }
