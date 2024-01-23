@@ -67,8 +67,8 @@ export default {
   align-items: center;
 }
 .header img {
-  width: 9rem;
-  height: 9rem;
+  width: 10%;
+  height: 10%;
   margin-left: 3%;
 }
 
@@ -105,6 +105,21 @@ export default {
     .menu-element {
       width: 100%;
       box-sizing: border-box;
+    }
+
+    .header img {
+      width: 20%;
+      height: 20%;
+      margin-left: 3%;
+    }
+
+    .header h1 {
+      display: inline;
+      font-size: 3rem;
+      font-weight: 3;
+      padding-top: 10%;
+      position: relative;
+      padding-right: 3%;
     }
   }
 
